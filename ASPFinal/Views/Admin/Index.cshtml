@@ -1,0 +1,87 @@
+﻿@using ASPFinal.Models.Admin
+
+@model ASPFinal.Models.Admin.ItemModel
+
+@{
+    ViewData["Title"] = "Додати предмет до магазину";
+    var validation = ViewData["validation"] as ItemValidationModel;
+    var isSuccess = ViewData["isSuccess"];
+}
+
+@if (isSuccess is not null)
+{
+        <div class="is-valid">Предмет успішно додано!</div>
+}
+
+<form method="post" enctype="multipart/form-data" asp-controller="Admin" asp-action="AddItem">
+
+    <!--Name Input-->
+    <div class="form-group mb-3">
+        <label asp-for="Name" class="form-label">Назва:</label>
+        <input type="text" asp-for="Name" 
+               class="form-control @( validation is null
+                                      ? "" 
+                                      : (validation.NameMessage is null 
+                                         ? "is-valid" : "is-invalid") )" 
+               placeholder="Введіть назву предмету" />
+
+        @if (validation?.NameMessage is not null)
+        {
+            <div class="invalid-feedback"> @validation.NameMessage </div>
+        }
+    </div>
+    <!--Name Input End-->
+
+    <!--Item Input-->
+    <div class="form-group mb-3">
+        <label asp-for="Content" class="form-label">Предмет:</label>
+        <input asp-for="Content" type="file" id="formFile" 
+                class="form-control @( validation is null 
+                                    ? "" 
+                                    : (validation.ContentMessage is null 
+                                        ? "is-valid" : "is-invalid") )">
+        @if (validation?.ContentMessage is not null)
+        {
+            <div class="invalid-feedback"> @validation.ContentMessage </div>
+        }
+    </div>
+    <!--Item Input End-->
+    
+    <!--Item Type Select-->
+    <div class="form-group mb-3">
+        <label asp-for="Type" class="form-label">Тип:</label>
+        <select asp-for="Type" aria-label="Default select example" 
+                 class="form-select @( validation is null 
+                 ? "" 
+                 : (validation.TypeMessage is null
+                    ? "is-valid" : "is-invalid") )">
+            <option selected disabled hidden value="-1">Оберіть тип</option>
+            <option value="1">Предмет</option>
+            <option value="2">Персонаж</option>
+        </select>
+        @if (validation?.TypeMessage is not null)
+        {
+            <div class="invalid-feedback"> @validation.TypeMessage </div>
+        }
+    </div>
+    <!--Item Type Select End-->
+
+    <!--Cost Input-->
+    <div class="form-group mb-3">
+        <label asp-for="CostCoins" class="form-label">Вартісь:</label>
+        <input type="number" asp-for="CostCoins" 
+               class="form-control @( validation is null
+                                      ? "" 
+                                      : (validation.CostMessage is null 
+                                         ? "is-valid" : "is-invalid") )" 
+               placeholder="Введіть вартість предмету" />
+
+        @if (validation?.CostMessage is not null)
+        {
+            <div class="invalid-feedback"> @validation.CostMessage </div>
+        }
+    </div>
+    <!--Cost Input End-->
+
+    <button type="submit" class="btn btn-primary">Додати</button>
+</form>
