@@ -38,5 +38,10 @@ namespace ASPFinal.Controllers
                 return NotFound();
             }
         }
+        public IActionResult Logout()
+        {
+            HttpContext.Session.Remove("authUserId");
+            return RedirectToAction("Index", "Home");
+        }
     }
 }

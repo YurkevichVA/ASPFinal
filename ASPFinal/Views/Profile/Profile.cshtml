@@ -1,11 +1,13 @@
 ﻿@using System.Security.Claims;
+@using ASPFinal.Models.Profile;
 @model ASPFinal.Models.Profile.ProfileModel;
 @{
     ViewData["Title"] = "Профіль";
+    var editValidation = ViewData["editValidation"] as EditProfileValidationModel;
 }
 
 <section class="h-100">
-    <div class="container py-5 h-100">
+    <div class="container pt-3 h-100">
         <div class="row d-flex justify-content-center align-items-center h-100">
             <div class="col col-lg-9 col-xl-7">
                 <div class="card">
@@ -16,10 +18,17 @@
                                  style="width: 150px; z-index: 1">
                              @if(Model.IsPersonal)
                              {
-                                <button type="button" class="btn btn-outline-dark" data-mdb-ripple-color="dark"
-                                    style="z-index: 1;">
-                                    Редагувати
-                                </button>
+                                <div style="z-index: 1;" class="d-flex">
+                                    <button type="button" class="btn btn-outline-dark" data-mdb-ripple-color="dark" data-bs-toggle="modal" data-bs-target="#exampleModal">
+                                            Редагувати
+                                    </button>
+                                    <a role="button" class="btn btn-outline-danger mx-1" asp-action="Logout">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-box-arrow-right" viewBox="0 0 16 16">
+                                            <path fill-rule="evenodd" d="M10 12.5a.5.5 0 0 1-.5.5h-8a.5.5 0 0 1-.5-.5v-9a.5.5 0 0 1 .5-.5h8a.5.5 0 0 1 .5.5v2a.5.5 0 0 0 1 0v-2A1.5 1.5 0 0 0 9.5 2h-8A1.5 1.5 0 0 0 0 3.5v9A1.5 1.5 0 0 0 1.5 14h8a1.5 1.5 0 0 0 1.5-1.5v-2a.5.5 0 0 0-1 0v2z" />
+                                            <path fill-rule="evenodd" d="M15.854 8.354a.5.5 0 0 0 0-.708l-3-3a.5.5 0 0 0-.708.708L14.293 7.5H5.5a.5.5 0 0 0 0 1h8.793l-2.147 2.146a.5.5 0 0 0 .708.708l3-3z" />
+                                        </svg>
+                                    </a>
+                                </div>
                              }
                         </div>
                         <div class="ms-3" style="margin-top: 130px;">
@@ -69,3 +78,117 @@
         </div>
     </div>
 </section>
+
+<!--Modal-->
+<div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <form asp-controller="" asp-action="" method="post">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">Редагування</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <!--Name Input-->
+                    <div class="d-flex flex-row align-items-center mb-4">
+                        <div class="form-outline flex-fill mb-0">
+                            <label class="form-label" >Ваше ім'я</label>
+                            <input type="text" 
+                                   class="form-control @( editValidation is null
+                                                                        ? "" : (editValidation.NameMessage is null
+                                                                            ? "is-valid" : "is-invalid") )" />
+                            @if (editValidation?.NameMessage is not null)
+                            {
+                                <div class="invalid-feedback"> @editValidation.NameMessage </div>
+                            }
+                        </div>
+                    </div>
+
+                    <!--Login Input-->
+                    <div class="d-flex flex-row align-items-center mb-4">
+                        <div class="form-outline flex-fill mb-0">
+                            <label class="form-label">Ваш логін</label>
+                            <input type="text"
+                                   class="form-control @( editValidation is null
+                                                                        ? ""
+                                                                        : (editValidation.LoginMessage is null
+                                                                            ? "is-valid" : "is-invalid") )" />
+                            @if (editValidation?.LoginMessage is not null)
+                            {
+                                <div class="invalid-feedback"> @editValidation.LoginMessage </div>
+                            }
+                        </div>
+                    </div>
+
+                    <!--Emai Input-->
+                    <div class="d-flex flex-row align-items-center mb-4">
+                        <div class="form-outline flex-fill mb-0">
+                            <label class="form-label">Ваша пошта</label>
+                            <input type="email"
+                                   class="form-control @( editValidation is null
+                                                                        ? ""
+                                                                        : (editValidation.EmailMessage is null
+                                                                            ? "is-valid" : "is-invalid") )" />
+                            @if (editValidation?.EmailMessage is not null)
+                            {
+                                <div class="invalid-feedback"> @editValidation.EmailMessage </div>
+                            }
+                        </div>
+                    </div>
+
+                    <!--Password Input-->
+                    <div class="d-flex flex-row align-items-center mb-4">
+                        <div class="form-outline flex-fill mb-0">
+                            <label class="form-label">Ваш пароль</label>
+                            <input type="password"
+                                   class="form-control @( editValidation is null
+                                                                        ? ""
+                                                                        : (editValidation.PasswordMessage is null
+                                                                            ? "is-valid" : "is-invalid") )" />
+                            @if (editValidation?.PasswordMessage is not null)
+                            {
+                                <div class="invalid-feedback"> @editValidation.PasswordMessage </div>
+                            }
+                        </div>
+                    </div>
+
+                    <!--Repeat Password Input-->
+                    <div class="d-flex flex-row align-items-center mb-4">
+                        <div class="form-outline flex-fill mb-0">
+                            <label class="form-label">Повторіть пароль</label>
+                            <input type="password"
+                                   class="form-control @( editValidation is null
+                                                                        ? ""
+                                                                        : (editValidation.RepeatPasswordMessage is null
+                                                                            ? "is-valid" : "is-invalid") )" />
+                            @if (editValidation?.RepeatPasswordMessage is not null)
+                            {
+                                <div class="invalid-feedback"> @editValidation.RepeatPasswordMessage </div>
+                            }
+                        </div>
+                    </div>
+
+                    <!--Avatar Input-->
+                    <div class="d-flex flex-row align-items-center mb-4">
+                        <div class="form-outline flex-fill mb-0">
+                            <label class="form-label">Виберіть файл для аватарки</label>
+                            <input type="file" id="formFile"
+                                   class="form-control @( editValidation is null
+                                                                        ? ""
+                                                                        : (editValidation.AvatarMessage is null
+                                                                            ? "is-valid" : "is-invalid") )">
+                            @if (editValidation?.AvatarMessage is not null)
+                            {
+                                <div class="invalid-feedback"> @editValidation.AvatarMessage </div>
+                            }
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Скасувати</button>
+                    <button type="button" class="btn btn-primary" id="login-button">Змінити</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
