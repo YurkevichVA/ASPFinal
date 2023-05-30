@@ -3,7 +3,12 @@
 @model ASPFinal.Models.Profile.ProfileModel;
 @{
     ViewData["Title"] = "Профіль";
-    var editValidation = ViewData["editValidation"] as EditProfileValidationModel;
+    var editValidation = ViewData["validation"] as EditProfileValidationModel;
+}
+
+@if (editValidation is not null)
+{
+    <div> Edit Invalid </div>
 }
 
 <section class="h-100">
@@ -83,17 +88,18 @@
 <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content">
-            <form asp-controller="" asp-action="" method="post">
+            <form asp-controller="Profile" asp-action="EditProfile" method="post" enctype="multipart/form-data">
                 <div class="modal-header">
                     <h5 class="modal-title" id="exampleModalLabel">Редагування</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
+                    
                     <!--Name Input-->
                     <div class="d-flex flex-row align-items-center mb-4">
                         <div class="form-outline flex-fill mb-0">
                             <label class="form-label" >Ваше ім'я</label>
-                            <input type="text" 
+                            <input type="text" value="@(Model.Name)" name="form-name" id="form-name"
                                    class="form-control @( editValidation is null
                                                                         ? "" : (editValidation.NameMessage is null
                                                                             ? "is-valid" : "is-invalid") )" />
@@ -108,7 +114,7 @@
                     <div class="d-flex flex-row align-items-center mb-4">
                         <div class="form-outline flex-fill mb-0">
                             <label class="form-label">Ваш логін</label>
-                            <input type="text"
+                            <input type="text" value="@(Model.Login)" name="form-login" id="form-login"
                                    class="form-control @( editValidation is null
                                                                         ? ""
                                                                         : (editValidation.LoginMessage is null
@@ -124,7 +130,7 @@
                     <div class="d-flex flex-row align-items-center mb-4">
                         <div class="form-outline flex-fill mb-0">
                             <label class="form-label">Ваша пошта</label>
-                            <input type="email"
+                            <input type="email" value="@(Model.Email)" name="form-email"id="form-email"
                                    class="form-control @( editValidation is null
                                                                         ? ""
                                                                         : (editValidation.EmailMessage is null
@@ -136,43 +142,11 @@
                         </div>
                     </div>
 
-                    <!--Password Input-->
-                    <div class="d-flex flex-row align-items-center mb-4">
-                        <div class="form-outline flex-fill mb-0">
-                            <label class="form-label">Ваш пароль</label>
-                            <input type="password"
-                                   class="form-control @( editValidation is null
-                                                                        ? ""
-                                                                        : (editValidation.PasswordMessage is null
-                                                                            ? "is-valid" : "is-invalid") )" />
-                            @if (editValidation?.PasswordMessage is not null)
-                            {
-                                <div class="invalid-feedback"> @editValidation.PasswordMessage </div>
-                            }
-                        </div>
-                    </div>
-
-                    <!--Repeat Password Input-->
-                    <div class="d-flex flex-row align-items-center mb-4">
-                        <div class="form-outline flex-fill mb-0">
-                            <label class="form-label">Повторіть пароль</label>
-                            <input type="password"
-                                   class="form-control @( editValidation is null
-                                                                        ? ""
-                                                                        : (editValidation.RepeatPasswordMessage is null
-                                                                            ? "is-valid" : "is-invalid") )" />
-                            @if (editValidation?.RepeatPasswordMessage is not null)
-                            {
-                                <div class="invalid-feedback"> @editValidation.RepeatPasswordMessage </div>
-                            }
-                        </div>
-                    </div>
-
                     <!--Avatar Input-->
                     <div class="d-flex flex-row align-items-center mb-4">
                         <div class="form-outline flex-fill mb-0">
                             <label class="form-label">Виберіть файл для аватарки</label>
-                            <input type="file" id="formFile"
+                            <input type="file" name="form-avatar" id="form-avatar"
                                    class="form-control @( editValidation is null
                                                                         ? ""
                                                                         : (editValidation.AvatarMessage is null
@@ -186,7 +160,7 @@
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Скасувати</button>
-                    <button type="button" class="btn btn-primary" id="login-button">Змінити</button>
+                    <button type="submit" class="btn btn-primary" id="login-button">Змінити</button>
                 </div>
             </form>
         </div>

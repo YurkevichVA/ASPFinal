@@ -10,6 +10,7 @@ using ASPFinal.Services.Validation;
 using ASPFinal.Services.Kdf;
 using ASPFinal.Services.Email;
 using Microsoft.Extensions.Primitives;
+using System.Security.Claims;
 
 namespace ASPFinal.Controllers
 {
@@ -34,6 +35,10 @@ namespace ASPFinal.Controllers
 
         public IActionResult Index()
         {
+            if(HttpContext.User.Identity?.IsAuthenticated == true)
+            {
+                return RedirectToAction("Index", "Profile", new { id = HttpContext.User.Claims.Where(t => t.Type == ClaimTypes.NameIdentifier).FirstOrDefault()?.Value });
+            }
             return View();
         }
         public IActionResult Registration(RegistrationModel registrationModel)
@@ -192,13 +197,15 @@ namespace ASPFinal.Controllers
                         ConfirmLink = "#"
                     });
 
+                return View("Index");
             }
             else // не всі форми влаідні - повертаємо на форму реєстрації
             {
                 // передаємо дані щодо перевірок
                 ViewData["registerValidation"] = registerValidation;
+
+                return View();
             }
-            return View();
         }
         [HttpPost]
         public IActionResult AuthUser(LoginModel loginModel)
@@ -206,12 +213,12 @@ namespace ASPFinal.Controllers
             if (loginModel.Login is null)
             {
                 ViewData["auth-msg"] = "Missed required parameter: user-login";
-                return RedirectToAction("Registration");
+                return RedirectToAction("Index");
             }
             if (loginModel.Password is null)
             {
                 ViewData["auth-msg"] = "Missed required parameter: user-password";
-                return RedirectToAction("Registration");
+                return RedirectToAction("Index");
             }
 
             string login = loginModel.Login;
@@ -230,7 +237,7 @@ namespace ASPFinal.Controllers
             }
 
             ViewData["auth-msg"] = "Авторизацію відхилено";
-            return RedirectToAction("Registration");
+            return RedirectToAction("Index");
         }
         [HttpGet]
         public IActionResult RedirectToProfile()
