@@ -268,7 +268,7 @@ namespace ASPFinal.Controllers
         private bool _SendConfirmEmail(User user, EmailConfirmToken token)
         {
             // Формуємо посилання: схема://домен/User/ConfirmToken?token=...
-            string confirmLink = $"{HttpContext.Request.Scheme}://{HttpContext.Request.Host.Value}/User/ConfirmToken?token={token.Id}";
+            string confirmLink = $"{HttpContext.Request.Scheme}://{HttpContext.Request.Host.Value}/Profile/ConfirmToken?token={token.Id}";
 
             return _emailService.Send(
                 "confirm_email",

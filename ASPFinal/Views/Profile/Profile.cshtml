@@ -38,6 +38,10 @@
                         </div>
                         <div class="ms-3" style="margin-top: 130px;">
                             <h5>@(Model.IsNamePublic || Model.IsPersonal ? Model.Name: Model.Login)</h5>
+                            @if(Model.IsPersonal && !Model.IsEmailConfirmed)
+                            {
+                                <button class="btn btn-outline-warning btn-sm" data-bs-toggle="modal" data-bs-target="#confirmModal">Підтвердити e-mail</button>
+                            }
                         </div>
                     </div>
                     <div class="p-4 text-black" style="background-color: #f8f9fa;">
@@ -84,7 +88,7 @@
     </div>
 </section>
 
-<!--Modal-->
+<!--Modal Edit-->
 <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content">
@@ -166,3 +170,72 @@
         </div>
     </div>
 </div>
+
+<!--Model Confirm-->
+<div class="modal fade" id="confirmModal" tabindex="-1" aria-labelledby="confirmModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="confirmModalLabel">Введіть код з E-mail</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="input-group mb-3">
+                    <span class="input-group-text" id="confirm-addon">Код: </span>
+                    <input type="text" class="form-control"
+                           id="confirm-email-input"
+                           placeholder="Код з електронної пошти" aria-describedby="confirm-addon">
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-warning mx-2" id="resend-email-button">Надіслати новий код</button>
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Скасувати          </button>
+                <button type="button" class="btn btn-primary" id="confirm-email-button">Підтвердити        </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    document.addEventListener("DOMContentLoaded", () => {
+        const confirmEmailButton = document.getElementById("confirm-email-button");
+        if (!confirmEmailButton) console.error("Element not found 'confirm-email-button'");
+        else confirmEmailButton.addEventListener('click', confirmEmailButtonClick);
+
+        const resendEmailButton = document.getElementById("resend-email-button");
+        if (!resendEmailButton) console.error("Element not found 'resend-email-button'");
+        else resendEmailButton.addEventListener('click', resendEmailButtonClick);
+    });
+
+    function confirmEmailButtonClick() {
+        const confirmEmailInput = document.getElementById("confirm-email-input");
+        if(!confirmEmailInput) throw "Element not found: 'confirm-email-input'";
+        const emailCode = confirmEmailInput.value;
+        if(emailCode.length === 0) {
+            alert("Код не може бути порожним");
+            return;
+        }
+        window.fetch("/Profile/ConfirmEmail", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify(emailCode)
+        })
+        .then(r => r.json())
+        .then(j => {
+            console.log(j);
+            if(j.status == "200") {
+                window.location.reload();
+            }
+            else {
+                alert(j.data);
+            }
+        })
+    }
+    function resendEmailButtonClick() {
+        window.fetch("/Profile/ResendConfirmEmail", {
+            method: "PATCH"
+        }).then(r => r.text()).then(t => { console.log(t); });
+    }
+</script>
