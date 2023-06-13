@@ -1,6 +1,7 @@
 ﻿using ASPFinal.Data;
 using ASPFinal.Data.Entity;
 using ASPFinal.Models;
+using ASPFinal.Models.Admin;
 using ASPFinal.Models.Home;
 using ASPFinal.Models.Profile;
 using ASPFinal.Services.Email;
@@ -47,6 +48,24 @@ namespace ASPFinal.Controllers
                         model.IsPersonal = true;
                     }
                 }
+
+                model.Items = new();
+
+                var transactions = _dataContext.Transactions.Where(t => t.UserId == user.Id).ToList();
+
+                if (_dataContext.Transactions.Where(t => t.UserId == user.Id).Count() > 0)
+                {
+                    foreach (var transaction in transactions)
+                    {
+                        model.Items.Add(new ProfileItemModel()
+                        {
+                            Content = _dataContext.Items.Where(i => i.Id == transaction.ItemId).FirstOrDefault().Content
+                        });
+                    }
+                }
+
+                model.CharactersCount = _dataContext.Transactions.Where(t => t.UserId == user.Id).Count();
+                
                 return View(model);
             }
             else
@@ -258,6 +277,26 @@ namespace ASPFinal.Controllers
             catch
             {
                 return "Unauthorized";
+            }
+        }
+        [HttpGet] 
+        public string AddCoins() 
+        {
+            try
+            {
+                User? user = _dataContext.Users.Find(
+                        Guid.Parse(
+                            HttpContext.User.Claims
+                            .First(c => c.Type == ClaimTypes.Sid)
+                            .Value
+                    ));
+                user.CoinsCount = user.CoinsCount + _randomService.RandomCoins();
+                _dataContext.SaveChanges();
+                return "OK";
+            }
+            catch
+            {
+                return "ERROR";
             }
         }
 

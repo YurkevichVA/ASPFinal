@@ -1,4 +1,6 @@
-﻿namespace ASPFinal.Models.Profile
+﻿using ASPFinal.Models.Shop;
+
+namespace ASPFinal.Models.Profile
 {
     public class ProfileModel
     {
@@ -13,6 +15,10 @@
         public DateTime RegistrationDt { get; set; }
         public DateTime? LastEnter { get; set; }
         public bool IsDateTimesPublic { get; set; }
+        public int CoinsCount { get; set; }
+        public int CharactersCount { get; set; }
+        public int ItemsCount { get; set; }
+        public List<ProfileItemModel> Items { get; set; }
         /// <summary>
         /// Чи належить модель автентифікованого користувача
         /// </summary>
@@ -29,6 +35,8 @@
                 thisProp?.SetValue(this, prop.GetValue(user));
             }
             this.IsEmailConfirmed = user.EmailCode is null;
+            //this.CharactersCount = user.Transactions is null? 0 : user.Transactions.Count;
+            //this.ItemsCount = user.Items is null? 0 : user.Items.Where(i => i.Type == 2).Count();
         }
     }
 }

@@ -41,5 +41,9 @@ namespace ASPFinal.Services.Random
             }
             return new string(chars);
         }
+        public int RandomCoins()
+        {
+            return _random.Next(2000);
+        }
     }
 }

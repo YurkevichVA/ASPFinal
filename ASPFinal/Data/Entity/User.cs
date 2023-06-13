@@ -15,5 +15,6 @@
         public DateTime?    DeleteDt                { get; set; }
 
         /// Navigation properties ///
+        public List<Transaction> Transactions { get; set; } = null!;
     }
 }

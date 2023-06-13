@@ -46,12 +46,27 @@
                     </div>
                     <div class="p-4 text-black" style="background-color: #f8f9fa;">
                         <div class="d-flex justify-content-end text-center py-1">
-                            <div>
-                                <p class="mb-1 h5">253</p>
+                            <div class="px-1">
+                                <p class="mb-1 h5">
+                                    @Model.CoinsCount 
+                                    @if (Model.IsPersonal)
+                                    {
+                                        <i role="button" id="add-coins-button">
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-plus-circle" viewBox="0 0 16 16">
+                                                <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z" />
+                                                <path d="M8 4a.5.5 0 0 1 .5.5v3h3a.5.5 0 0 1 0 1h-3v3a.5.5 0 0 1-1 0v-3h-3a.5.5 0 0 1 0-1h3v-3A.5.5 0 0 1 8 4z" />
+                                            </svg>
+                                        </i>
+                                    }
+                                </p>
+                                <p class="small text-muted mb-0">Монет</p>
+                            </div>
+                            <div class="px-1">
+                                <p class="mb-1 h5">@Model.CharactersCount</p>
                                 <p class="small text-muted mb-0">Персонажів</p>
                             </div>
-                            <div class="px-3">
-                                <p class="mb-1 h5">1026</p>
+                            <div class="px-1">
+                                <p class="mb-1 h5">@Model.ItemsCount</p>
                                 <p class="small text-muted mb-0">Предметів</p>
                             </div>
                         </div>
@@ -61,26 +76,15 @@
                             <p class="lead fw-normal mb-0">Інвентарь</p>
                             <p class="mb-0"><a href="#!" class="text-muted">Show all</a></p>
                         </div>
-                        <div class="row g-2">
-                            <div class="col mb-2">
-                                <img src="https://mdbcdn.b-cdn.net/img/Photos/Lightbox/Original/img%20(112).webp"
-                                     alt="image 1" class="w-100 rounded-3">
+                        <div class="d-flex justify-content-center align-items-center mt-3">
+                        @foreach(var item in Model.Items)
+                        {
+                            <div class="mx-5">
+                                @Html.DisplayFor(m => item, "ItemProfile")
                             </div>
-                            <div class="col mb-2">
-                                <img src="https://mdbcdn.b-cdn.net/img/Photos/Lightbox/Original/img%20(107).webp"
-                                     alt="image 1" class="w-100 rounded-3">
-                            </div>
+                        }
                         </div>
-                        <div class="row g-2">
-                            <div class="col">
-                                <img src="https://mdbcdn.b-cdn.net/img/Photos/Lightbox/Original/img%20(108).webp"
-                                     alt="image 1" class="w-100 rounded-3">
-                            </div>
-                            <div class="col">
-                                <img src="https://mdbcdn.b-cdn.net/img/Photos/Lightbox/Original/img%20(114).webp"
-                                     alt="image 1" class="w-100 rounded-3">
-                            </div>
-                        </div>
+                    </div>
                     </div>
                 </div>
             </div>
@@ -205,6 +209,10 @@
         const resendEmailButton = document.getElementById("resend-email-button");
         if (!resendEmailButton) console.error("Element not found 'resend-email-button'");
         else resendEmailButton.addEventListener('click', resendEmailButtonClick);
+
+        const addCoinsButton = document.getElementById("add-coins-button");
+        if (!addCoinsButton) console.error("Element not found 'add-coins-button'");
+        else addCoinsButton.addEventListener('click', addCoinsButtonClick);
     });
 
     function confirmEmailButtonClick() {
@@ -237,5 +245,10 @@
         window.fetch("/Profile/ResendConfirmEmail", {
             method: "PATCH"
         }).then(r => r.text()).then(t => { console.log(t); });
+    }
+    function addCoinsButtonClick() {
+        window.fetch("/Profile/AddCoins", {
+            method: "GET"
+        }).then(r => r.text()).then(t => { console.log(t); window.location.reload() });
     }
 </script>

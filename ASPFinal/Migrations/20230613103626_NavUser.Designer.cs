@@ -3,6 +3,7 @@ using System;
 using ASPFinal.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -10,9 +11,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace ASPFinal.Migrations
 {
     [DbContext(typeof(DataContext))]
-    partial class DataContextModelSnapshot : ModelSnapshot
+    [Migration("20230613103626_NavUser")]
+    partial class NavUser
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -46,7 +49,6 @@ namespace ASPFinal.Migrations
             modelBuilder.Entity("ASPFinal.Data.Entity.Item", b =>
                 {
                     b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
                         .HasColumnType("char(36)");
 
                     b.Property<string>("Content")
@@ -68,22 +70,6 @@ namespace ASPFinal.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Items");
-                });
-
-            modelBuilder.Entity("ASPFinal.Data.Entity.Transaction", b =>
-                {
-                    b.Property<Guid>("ItemId")
-                        .HasColumnType("char(36)");
-
-                    b.Property<Guid>("UserId")
-                        .HasColumnType("char(36)");
-
-                    b.Property<DateTime>("TransactionDate")
-                        .HasColumnType("datetime(6)");
-
-                    b.HasKey("ItemId", "UserId");
-
-                    b.ToTable("Transactions");
                 });
 
             modelBuilder.Entity("ASPFinal.Data.Entity.User", b =>
@@ -132,18 +118,18 @@ namespace ASPFinal.Migrations
                     b.ToTable("Users");
                 });
 
-            modelBuilder.Entity("ASPFinal.Data.Entity.Transaction", b =>
+            modelBuilder.Entity("ASPFinal.Data.Entity.Item", b =>
                 {
                     b.HasOne("ASPFinal.Data.Entity.User", null)
-                        .WithMany("Transactions")
-                        .HasForeignKey("ItemId")
+                        .WithMany("Items")
+                        .HasForeignKey("Id")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });
 
             modelBuilder.Entity("ASPFinal.Data.Entity.User", b =>
                 {
-                    b.Navigation("Transactions");
+                    b.Navigation("Items");
                 });
 #pragma warning restore 612, 618
         }

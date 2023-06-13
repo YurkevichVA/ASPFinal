@@ -1,0 +1,52 @@
+﻿@using ASPFinal.Models.Shop
+@model ASPFinal.Models.Shop.ShopModel
+@{
+    ViewData["Title"] = "Forum";
+}
+
+
+<div class="d-flex justify-content-center align-items-center mt-3">
+    @foreach (var Item in Model.Items)
+    {
+        <div class="mx-5">
+            @Html.DisplayFor(m => Item, "Item")
+        </div>
+    }
+</div>
+
+<script>
+    document.addEventListener("DOMContentLoaded", () => {
+        for(let elem of document.querySelectorAll("[data-item-id]")) {
+            elem.addEventListener('click', buyItemClick);
+        }
+    });
+    function buyItemClick(e) {
+
+        const itemElem = e.target;
+
+        let id = itemElem.getAttribute("data-item-id");
+
+        let idStr = JSON.stringify({'id' : id});
+
+        console.log(idStr);
+
+        window.fetch("Shop/BuyItem", {
+            method: "POST",
+            headers: {
+                'Content-Type' : 'application/json'
+            },
+            body: JSON.stringify({'Id': id})
+        })
+        .then(r => r.text())
+        .then(t => {
+            if(t != 'OK')
+            {
+                alert(t);
+            }
+            else
+            {
+                window.location.reload();
+            }
+        })
+    }
+</script>
